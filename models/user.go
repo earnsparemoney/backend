@@ -1,7 +1,7 @@
 package models
 
 import (
-	//"github.com/jinzhu/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type  User struct {
@@ -14,6 +14,12 @@ type  User struct {
 }
 
 
+func CreateUser(u User) error{
+	db.NewRecord(u)
+	db.Create(&u)
+	return nil
+}
 
+func GetUserByID(id string) 
 
 
