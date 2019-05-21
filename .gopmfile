@@ -1,3 +1,6 @@
 [target]
 path= github.com/earnsparemoney/backend
+path=github.com/jinzhu/gorm
+path=github.com/labstack/echo
+
 
