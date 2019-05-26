@@ -10,17 +10,24 @@ type Result struct{
 }
 
 
-func NewRes(code int, msg string, data...interface{})(int, Result){
+func newRes(code int, msg string, data...interface{}) (int,Result){
 	if len(data)>0{
-		return 200,Result{
+		return code,Result{
 			Code: code,
 			Msg: msg,
 			Data: data[0],
 		}
 	}
-	return 200, Result{
+	return code, Result{
 		Code: code,
 		Msg: msg,
-
 	}
+}
+
+func Success(msg string, data...interface{}) (int,Result){
+	return newRes(200,msg,data)
+}
+
+func Fail(msg string) (int,Result){
+	return newRes(400,msg)
 }

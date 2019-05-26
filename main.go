@@ -5,7 +5,13 @@ import (
 	"github.com/earnsparemoney/backend/routers"
 	"github.com/labstack/echo/middleware"
 	"github.com/earnsparemoney/backend/utils"
+	"github.com/earnsparemoney/backend/models"
 )
+
+type Env struct {
+	db model.DataStore
+	echo *echo.Echo
+}
 
 
 func main(){
@@ -14,10 +20,17 @@ func main(){
 	e.Use(middleware.Recover())
 	//v1 := e.Group("/v1")
 
-	utils.InitDBConn()
-	db :=utils.GetDBConn()
+	dbConfig := "root:sactestdatabase@tcp(222.200.190.31:33336)/earnsparemoney?charset=utf8&parseTime=True&loc=Local"
 
-	routers.RegisterUserRouters(e)
+	db, err := models.NewDB(dbConfig)
+	if err !=nil{
+		panic(err)
+	}
+
+	env :=&Env{db, e}
+
+
+	routers.RegisterUserRouters(env.echo)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
