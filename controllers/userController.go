@@ -8,30 +8,39 @@ import (
 	"github.com/earnsparemoney/backend/models"
 )
 
+type UserController struct{
+	db *models.DBStore
+}
+
+func GetUserController(db * models.DBStore) *UserController{
+	uc := &UserController{db}
+	return uc
+}
+
 //get parameters from request body
 //check if some parameters are invalid
 // call model's function to add a new user
-func AddUser(c echo.Context) error{
+func (uc *UserController)AddUser(c echo.Context) error{
 	u := new(models.User)
 	if err:=c.Bind(u); err!=nil{
 		return err
 	}
 
-	if errGet,_:=models.GetUserByID(u.Account);errGet == nil{
+	if errGet,_:=uc.db.GetUserByID(u.Account);errGet == nil{
 		return c.JSON(utils.Fail("already has user with same account"))
 	}
-	models.CreateUser(*u)
+	uc.db.CreateUser(*u)
 	return c.JSON(utils.Success("success"))
 	
 }
 
-func LoginUser(c echo.Context) error{
+func (uc *UserController)LoginUser(c echo.Context) error{
 	return c.String(http.StatusOK, "hello world")	
 }
 
-func GetUserByAccount(c echo.Context) error{
+func (uc *UserController)GetUserByAccount(c echo.Context) error{
 	uid := c.Param("account")
-	err,u := models.GetUserByID(uid)
+	err,u := uc.db.GetUserByID(uid)
 	if err ==nil {
 		return c.JSON(utils.Success("success",u))
 	}
@@ -39,10 +48,10 @@ func GetUserByAccount(c echo.Context) error{
 	//return c.String(http.StatusOK, "hello world")	
 }
 
-func UpdateUser(c echo.Context) error{
+func (uc *UserController)UpdateUser(c echo.Context) error{
 	return c.String(http.StatusOK, "hello world")	
 }
 
-func LogoutUser(c echo.Context) error{
+func (uc *UserController)LogoutUser(c echo.Context) error{
 	return c.String(http.StatusOK, "hello world")	
 }

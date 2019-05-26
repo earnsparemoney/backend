@@ -4,12 +4,12 @@ import (
 	"github.com/labstack/echo"
 	"github.com/earnsparemoney/backend/routers"
 	"github.com/labstack/echo/middleware"
-	"github.com/earnsparemoney/backend/utils"
+	//"github.com/earnsparemoney/backend/utils"
 	"github.com/earnsparemoney/backend/models"
 )
 
 type Env struct {
-	db model.DataStore
+	db *models.DBStore
 	echo *echo.Echo
 }
 
@@ -28,9 +28,10 @@ func main(){
 	}
 
 	env :=&Env{db, e}
+	env.db.UserModelInit()
 
 
-	routers.RegisterUserRouters(env.echo)
+	routers.RegisterUserRouters(env.echo, env.db)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
