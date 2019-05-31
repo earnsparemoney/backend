@@ -31,3 +31,7 @@ func Success(msg string, data...interface{}) (int,Result){
 func Fail(msg string) (int,Result){
 	return newRes(400,msg)
 }
+
+func Error(msg string) (int, Result){
+	return newRes(500,msg)
+}

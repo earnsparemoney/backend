@@ -2,5 +2,7 @@
 path= github.com/earnsparemoney/backend
 path=github.com/jinzhu/gorm
 path=github.com/labstack/echo
-
+path=github/gorilla/sessions
+path=github.com/labstack/echo-contrib
+path=github.com/dgrijalva/jwt-go
 

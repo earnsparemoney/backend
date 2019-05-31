@@ -46,8 +46,8 @@ func (db *DBStore)GetUserByID(id string) (error,User){
 	return nil,u
 }
 
-func (db *DBStore)UpdateUser(u User) error{
-	return nil
+func (db *DBStore)UpdateUser(u *User) {
+	db.Save(u)
 }
 
 

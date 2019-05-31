@@ -6,11 +6,19 @@ import (
 	"github.com/labstack/echo/middleware"
 	//"github.com/earnsparemoney/backend/utils"
 	"github.com/earnsparemoney/backend/models"
+	"github.com/earnsparemoney/backend/controllers"
+
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
+
+	//"golang.org/x/crypto/acme/autocert"
+
 )
 
 type Env struct {
 	db *models.DBStore
 	echo *echo.Echo
+	uc * controllers.UserController
 }
 
 
@@ -27,11 +35,15 @@ func main(){
 		panic(err)
 	}
 
-	env :=&Env{db, e}
+	//e.AutoTLSManager.Cache = autocert.DirCache("/var/www/.cache")
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+
+
+	env :=&Env{db, e, controllers.GetUserController(db)}
 	env.db.UserModelInit()
 
 
-	routers.RegisterUserRouters(env.echo, env.db)
+	routers.RegisterUserRouters(env.echo, env.uc)
 
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.StartTLS(":443","server.crt","server.key"))
 }
