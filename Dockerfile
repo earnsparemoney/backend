@@ -6,10 +6,9 @@ FROM golang:latest
 WORKDIR $GOPATH/src/github.com/earnsparemoney/backend
 
 COPY . .
-RUN go get -u github.com/gpmgo/gopm
-RUN gopm get -d -v ./...
-RUN gopm install -v ./...
-
+RUN go get github.com/gpmgo/gopm
+RUN gopm get -g 
+RUN gopm install 
 
 
 EXPOSE 443

@@ -1,8 +1,9 @@
 [target]
-path= github.com/earnsparemoney/backend
-path=github.com/jinzhu/gorm
-path=github.com/labstack/echo
-path=github/gorilla/sessions
-path=github.com/labstack/echo-contrib
-path=github.com/dgrijalva/jwt-go
+path =  github.com/earnsparemoney/backend
 
+[deps]
+github.com/dgrijalva/jwt-go = branch:master
+github.com/gorilla/sessions =  branch:master
+github.com/jinzhu/gorm =  branch:master
+github.com/labstack/echo = branch:master
+github.com/labstack/echo-contrib = branch:master
