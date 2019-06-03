@@ -6,13 +6,11 @@ FROM golang:latest
 WORKDIR $GOPATH/src/github.com/earnsparemoney/backend
 
 COPY . .
-RUN go get github.com/gpmgo/gopm
-RUN gopm get -g 
-RUN gopm install 
+RUN go get -d -v ./...
+RUN go install -v ./...
 
 
 EXPOSE 443
 
 
 CMD go run main.go
-
