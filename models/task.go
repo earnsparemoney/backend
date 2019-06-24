@@ -5,18 +5,23 @@ import (
 )
 
 type Task struct {
-	ID           uint64  `json:"id" sql:"AUTO_INCREMENT" gorm:"primary_key:true"`
-	Name         string  `json:"name"`
-	Award        float64 `json:"award" `
-	Description  string  `json:"description" `
-	Ddl          string  `json:"ddl"`
-	Usernum      int     `json:"usernum"`
-	Agentaccount string  `json:"agentaccount"`
-	Users        []User  `json:"users" gorm:"many2many:TaskUsers;"`
-	Undousers    []User  `json:"undousers" gorm:"many2many:TaskundoUsers;"`
-	Doneusers    []User  `json:"doneusers" gorm:"many2many:TaskdoneUsers;"`
-	Complete     bool    `json:"complete"`
+	ID           uint64 `json:"id" sql:"AUTO_INCREMENT" gorm:"primary_key:true"`
+	Content      string `json:"content"`
+	Agentaccount string `json:"agentaccount"`
+	Users        []User `json:"users" gorm:"many2many:TaskUsers;"`
+	Undousers    []User `json:"undousers" gorm:"many2many:TaskundoUsers;"`
+	Doneusers    []User `json:"doneusers" gorm:"many2many:TaskdoneUsers;"`
+	Complete     bool   `json:"complete"`
 }
+
+/*
+	Title string	`json:"title"`
+	Description string `json:"description" `
+	Pay string `json:"pay" `
+	StartDate string `json:"startDate" `
+	EndDate string `json:"endDate" `
+	Type string `json:"type" `
+*/
 
 type TaskStore interface {
 	CreateTask(t Task)
