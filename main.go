@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/earnsparemoney/backend/routers"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	//"github.com/earnsparemoney/backend/utils"
 	"github.com/earnsparemoney/backend/controllers"
 	"github.com/earnsparemoney/backend/models"

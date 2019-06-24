@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/labstack/echo"
+	echo "github.com/labstack/echo/v4"
 	//  "net/http"
 	"github.com/earnsparemoney/backend/models"
 	"github.com/earnsparemoney/backend/utils"

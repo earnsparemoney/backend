@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/labstack/echo"
+	echo "github.com/labstack/echo/v4"
 	"github.com/earnsparemoney/backend/utils"
 	//"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"

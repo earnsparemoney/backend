@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/earnsparemoney/backend/controllers"
-	"github.com/labstack/echo"
+	echo "github.com/labstack/echo/v4"
 	//"github.com/earnsparemoney/backend/models"
 	"github.com/earnsparemoney/backend/middleware"
 )
