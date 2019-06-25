@@ -14,14 +14,14 @@ type Task struct {
 	Complete     bool   `json:"complete"`
 }
 
-/*
-	Title string	`json:"title"`
+type ContentData struct {
+	Title       string `json:"title"`
 	Description string `json:"description" `
-	Pay string `json:"pay" `
-	StartDate string `json:"startDate" `
-	EndDate string `json:"endDate" `
-	Type string `json:"type" `
-*/
+	Pay         string `json:"pay" `
+	StartDate   string `json:"startDate" `
+	EndDate     string `json:"endDate" `
+	Type        string `json:"type" `
+}
 
 type TaskStore interface {
 	CreateTask(t Task)
@@ -33,7 +33,6 @@ type TaskStore interface {
 //will be executed before main function
 func (db *DBStore) TaskModelInit() {
 	db.Set("gorm:table_options", "ENGINE=InnoDB AUTO_INCREMENT=1;").AutoMigrate(&Task{})
-
 }
 
 func (db *DBStore) CreateTask(t Task) error {

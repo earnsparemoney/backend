@@ -6,20 +6,23 @@ import (
 	"github.com/earnsparemoney/backend/models"
 	"github.com/earnsparemoney/backend/utils"
 	//  "github.com/gorilla/sessions"
-	"fmt"
+	//"fmt"
+	"github.com/earnsparemoney/backend/middleware"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/wxnacy/wgo/arrays"
+	"io/ioutil"
 	"strconv"
-	"time"
+	//"time"
+	//jwt "github.com/dgrijalva/jwt-go"
 )
 
 func (uc *UserController) PublishTask(c echo.Context) error {
-	token := c.Get("claims").(map[string]interface{})
-	uid := token["account"].(string)
-	content := c.QueryParams()
+	token := c.Request().Header.Get(echo.HeaderAuthorization)
+	claims, _ := middleware.ParseToken(token, "secret")
+	uid := claims["account"].(string)
 	t := new(models.Task)
-	t.Content = content.Encode()
-	fmt.Println(t.Content)
+	s, _ := ioutil.ReadAll(c.Request().Body)
+	t.Content = string(s)
 	t.Agentaccount = uid
 	t.Complete = false
 	uc.db.CreateTask(*t)
@@ -36,7 +39,7 @@ func (uc *UserController) GetListTsak(c echo.Context) error {
 	var ts []models.Task
 	var u models.User
 	var errU, errA error
-	if AgentID == "" {
+	if AgentID != "" {
 		HasAgentID = true
 		errA, ts = uc.db.GetAllTask()
 		if errA != nil {
@@ -51,6 +54,7 @@ func (uc *UserController) GetListTsak(c echo.Context) error {
 		}
 	}
 	var result []models.Task
+
 	for _, t := range ts {
 		if HasUserID {
 			index := arrays.Contains(t.Users, u)
@@ -162,8 +166,9 @@ func (uc *UserController) CancelTask(c echo.Context) error {
 }
 
 func (uc *UserController) GetuserListTask(c echo.Context) error {
-	token := c.Get("claims").(map[string]interface{})
-	uid := token["account"].(string)
+	token := c.Request().Header.Get(echo.HeaderAuthorization)
+	claims, _ := middleware.ParseToken(token, "secret")
+	uid := claims["account"].(string)
 	err, ts := uc.db.GetAllTask()
 	err1, u := uc.db.GetUserByID(uid)
 	if err != nil || err1 != nil {
@@ -180,8 +185,9 @@ func (uc *UserController) GetuserListTask(c echo.Context) error {
 }
 
 func (uc *UserController) GetagentListTask(c echo.Context) error {
-	token := c.Get("claims").(map[string]interface{})
-	uid := token["account"].(string)
+	token := c.Request().Header.Get(echo.HeaderAuthorization)
+	claims, _ := middleware.ParseToken(token, "secret")
+	uid := claims["account"].(string)
 	err, ts := uc.db.GetAllTask()
 	err1, u := uc.db.GetUserByID(uid)
 	if err != nil || err1 != nil {
