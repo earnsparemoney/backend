@@ -85,10 +85,12 @@ func (uc *UserController) CompleteTask(c echo.Context) error {
 }
 
 func (uc *UserController) DoneuserTask(c echo.Context) error {
-	Id, _ := strconv.Atoi(c.QueryParam("id"))
-	account := c.QueryParam("account")
+	//Id,_ := strconv.Atoi(c.QueryParam("id"))
+	//account := c.QueryParam("account")
+	uid := c.Param("account")
+	Id, _ := strconv.Atoi(c.Param("taskID"))
 	err, t := uc.db.GetTaskByID(uint64(Id))
-	err1, u := uc.db.GetUserByID(account)
+	err1, u := uc.db.GetUserByID(uid)
 	if err != nil || err1 != nil {
 		return err
 	}
@@ -101,7 +103,7 @@ func (uc *UserController) DoneuserTask(c echo.Context) error {
 	//	t.Undousers=append(t.Undousers[:index], t.Undousers[index+1:]...)
 	//	t.Doneusers=append(t.Doneusers,u)
 	uc.db.UpdateTask(&t)
-	return c.JSON(utils.Success("update successfully"))
+	return c.JSON(utils.Success("finish successfully"))
 }
 
 func (uc *UserController) DeleteTask(c echo.Context) error {
@@ -135,7 +137,7 @@ func (uc *UserController) ParticipateTask(c echo.Context) error {
 	//	t.Users=append(t.Users,u)
 	//	t.Undousers=append(t.Undousers,u)
 	uc.db.UpdateTask(&t)
-	return c.JSON(utils.Success("delete successfully"))
+	return c.JSON(utils.Success("Participate successfully"))
 }
 
 func (uc *UserController) CancelTask(c echo.Context) error {
@@ -162,7 +164,7 @@ func (uc *UserController) CancelTask(c echo.Context) error {
 		uc.db.Model(&t).Association("Doneusers").Delete(&u)
 	}
 	uc.db.UpdateTask(&t)
-	return c.JSON(utils.Success("delete successfully"))
+	return c.JSON(utils.Success("Cancel successfully"))
 }
 
 func (uc *UserController) GetuserListTask(c echo.Context) error {
