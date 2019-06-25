@@ -23,21 +23,47 @@ func (uc *UserController) PublishTask(c echo.Context) error {
 	t.Agentaccount = uid
 	t.Complete = false
 	uc.db.CreateTask(*t)
-	return c.JSON(utils.Success("success"))
+	_, ts := uc.db.GetAllTask()
+	return c.JSON(utils.Success("success", ts[len(ts)-1]))
 }
 func (uc *UserController) GetListTsak(c echo.Context) error {
-	token := c.Get("claims").(map[string]interface{})
-	uid := token["account"].(string)
-	err, ts := uc.db.GetAllTask()
-	err1, u := uc.db.GetUserByID(uid)
-	if err != nil || err1 != nil {
-		return err
+	//token:=c.Get("claims").(map[string]interface{})
+	//uid := token["account"].(string)
+	AgentID := c.QueryParam("agentID")
+	UserID := c.QueryParam("userID")
+	HasAgentID := false
+	HasUserID := false
+	var ts []models.Task
+	var u models.User
+	var errU, errA error
+	if AgentID == "" {
+		HasAgentID = true
+		errA, ts = uc.db.GetAllTask()
+		if errA != nil {
+			return errA
+		}
+	}
+	if UserID != "" {
+		HasUserID = true
+		errU, u = uc.db.GetUserByID(UserID)
+		if errU != nil {
+			return errU
+		}
 	}
 	var result []models.Task
 	for _, t := range ts {
-		index := arrays.Contains(t.Users, u)
-		if index != -1 || t.Agentaccount == u.Account {
-			result = append(result, t)
+		if HasUserID {
+			index := arrays.Contains(t.Users, u)
+			if index != -1 {
+				result = append(result, t)
+				continue
+			}
+		}
+		if HasAgentID {
+			if t.Agentaccount == AgentID {
+				result = append(result, t)
+				continue
+			}
 		}
 	}
 	return c.JSON(utils.Success("OK", result))
