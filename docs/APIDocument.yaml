@@ -1,0 +1,440 @@
+swagger: "2.0"
+info:
+  description: "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters."
+  version: "1.0.0"
+  title: "Earn Spare Money"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "petstore.swagger.io"
+basePath: "/v2"
+tags:
+- name: "user"
+  description: "Everything about users"
+  externalDocs:
+    description: "Find out more"
+    url: "http://127.0.0.1:8080"
+schemes:
+- "https"
+- "http"
+
+
+paths:
+  /user:
+    post:
+      tags:
+      - "user"
+      summary: "add a new user"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/user"
+      responses:
+        200:
+          description: "success"
+        400:
+          description: "already has same account"
+        500:
+          description: "server error"
+
+  /user/login:
+    get:
+      tags:
+      - "user"
+      summary: "log the user into the system"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "query"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200: 
+          description: "ok"
+        400:
+          description:  "invalid username/passowrd"
+  /user/logout:
+    get:
+      tags: 
+      - "user"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        default: 
+          description: "successful logout"
+  
+  /user/{account}:
+    put:
+      tags:
+      - "user"
+      summary: "update information of a user"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/user"
+      - in: "path"
+        name: "account"
+        required: true
+        type: "string"
+        
+      responses:
+        200:
+          description: "OK"
+        401:
+          description: "some fields are invalid"
+        500:
+          description: "server error"
+    get:
+      tags:
+      - "user"
+      summary: "get information of a user with account"
+      description: ""
+      produces: 
+      - "application/json"
+      parameters: 
+      - name: "account"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/user"
+        400:
+          description: "invalid user account"
+        404:
+          description: "user not found"
+  
+  /group:
+    post:
+      tags: 
+      - "group"
+      summary: "create a group"
+      description: ""
+      parameters:
+      - name: "body"
+        in: "body"
+        required: true
+        schema: 
+          $ref: "#/definitions/group"
+      responses:
+        200:
+          description: OK
+        400:
+          description: "already exists a group with same name"
+    get:
+      tags:
+      - "group"
+      summary: "get information about all groups"
+      description: "for now we just return all information - -. Multiple values can be provided with comma seperated string"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema: 
+            type: "array"
+            items: 
+              $ref: "#/definitions/group"
+        
+      
+  
+  /group/{groupName}:
+    get:
+      tags:
+      - "group"
+      summary: "get information of a group with groupName"
+      description: ""
+      parameters:
+      - name: "groupName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200: 
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/group"
+        400:
+          description: "invalid group name"
+  
+  
+  
+  
+  
+  
+  
+          
+          
+  /tasks:
+    post:
+      tags: 
+      - "tasks"
+      summary: "publish a task from agent"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "body"
+        description: "tasks published by agent"
+        required: true
+        schema:
+          $ref: "#/definitions/task"
+      responses:
+        200:
+          description: "successful published"
+        400:
+          description: "This task cause some conflicts"
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: "server error"
+  
+    get:
+      tags: 
+      - "tasks"
+      summary: "Get task lists by requirement"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - name: "agentID"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "userID"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful finished"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/task"
+        400:
+          description: "There are some conflicts"
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: "server error"  
+  
+  /tasks/{taskID}:
+    post:
+      tags: 
+      - "tasks"
+      summary: "Complete tasks by ID"
+      description: "finish the tasks,and give user the awards"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - name: "taskID"
+        in: "path"
+        description: "ID of tasks that needs to be finished"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful finished"
+        400:
+          description: "There are some conflicts"
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: "server error"
+
+    delete:
+      tags: 
+      - "tasks"
+      summary: "Delete tasks by ID"
+      description: "delete the tasks,and cancel this task in users' list "
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - name: "taskID"
+        in: "path"
+        description: "ID of tasks that needs to be deleted"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful delete"
+        400:
+          description: "There are some conflicts"
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: "server error"
+  /tasks/{taskID}/participant/{account}:
+    post:
+      tags: 
+      - "tasks"
+      summary: "participate in tasks by ID and user account"
+      description: "user participate in the tasks"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - name: "taskID"
+        in: "path"
+        description: "ID of tasks that needs to be participated in"
+        required: true
+        type: "integer"
+      - name: "account"
+        in: "path"
+        description: "account of the user that participate in the task"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful participate in"
+        400:
+          description: "There are some conflicts"
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: "server error"
+
+    delete:
+      tags: 
+      - "tasks"
+      summary: "user quit the task"
+      description: "user cancel the tasks"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - name: "taskID"
+        in: "path"
+        description: "ID of tasks that needs to be canceled"
+        required: true
+        type: "integer"
+      - name: "account"
+        in: "path"
+        description: "account of the user that cancel the task"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful cancel"
+        400:
+          description: "There are some conflicts"
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: "server error"   
+  
+  
+      
+        
+
+    
+
+        
+  
+        
+          
+definitions:
+  user:
+    type: "object"
+    properties:
+      account: 
+        type: "string"
+      password:
+        type:  "string"
+      email:
+        type: "string"
+        example: "123@qq.com"
+      phone:
+        type: "integer"
+        format: "int11"
+      
+  group:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      owner:
+        type: "string"
+        
+        
+  task:
+    type: "object"
+    properties:
+      id: 
+        type: "integer"
+      name:
+        type: "string"
+        example: "eat excrement"
+      award:
+        type: "number"
+        format: "double"
+        example: "20.00"
+      description:
+        type: "string"
+      ddl:
+        type: "string"
+        format: "date-time"
+      usernum:
+        type: "integer"
+      agentname:
+        type: "string"
+
+  tasklist:
+    type: "object"
+    additionalProperties:
+      $ref: "#/definitions/task"
+  error:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: "400"
+      reason:
+        type: "string"
+        example: "it's invaild"
+        
+
+      
+      
