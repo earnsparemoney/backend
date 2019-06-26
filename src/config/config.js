@@ -1,13 +1,13 @@
 module.exports = {
   port: 4000,
   db: {
-    user: 'root',
-    password: 'sactestdatabase',
-    database: 'EarnMyMoney',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWD || 'sactestdatabase',
+    database: process.env.DB_NAME || 'EarnMoney',
     options: {
       dialect: process.env.DIALECT || 'mysql',
-      host: '222.200.190.31',
-      port: 33336,
+      host: process.env.HOST || '222.200.190.31',
+      port: process.env.PORT || 33336,
       define: {
         charset: 'utf8mb4',
         collate: 'utf8mb4_unicode_ci',
@@ -20,3 +20,4 @@ module.exports = {
     secretKey: process.env.SECRET || 'secret'
   }
 }
+

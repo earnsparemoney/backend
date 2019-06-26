@@ -16,7 +16,7 @@ services:
   mysql:
     image: wilsonzhong/yueba_mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: YueBa
+      MYSQL_ROOT_PASSWORD: EarnMoney
     container_name: mysql
     hostname: mysql
     ports:
