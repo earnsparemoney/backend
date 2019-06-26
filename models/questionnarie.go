@@ -1,5 +1,9 @@
 package models
 
+import (
+	"github.com/jinzhu/gorm"
+)
+
 type publish struct {
 	qid uint64
 	uid string
@@ -20,8 +24,15 @@ type Questionnaire struct {
 	Body         string   `json:"body"`
 	Usernum      int      `json:"usernum"`
 	AgentAccount string   `json:"agentAccount"`
-	DoneUsers	 []string `json:"doneUsers"`
+	DoneUsers	 []User `json:"doneUsers" `
 	//DoneUsers    []User   `json:"doneUsers" gorm:"foreignkey:Account"`
+}
+
+
+type UserQues struct {
+	ID int `json:"id" gorm:"primary_key"` //ques id
+	Result string `json:"result"`
+	UserAccount string `json:"userAccount" gorm:"primary_key"`
 }
 
 type QuesStore interface{
@@ -34,25 +45,36 @@ type QuesStore interface{
 
 }
 
+func (db *DBStore) QuesModelInit() {
+	db.Set("gorm:table_options", "ENGINE=InnoDB AUTO_INCREMENT=1;").AutoMigrate(&Questionnaire{})
+	db.Set("gorm:table_options", "ENGINE=InnoDB AUTO_INCREMENT=1;").AutoMigrate(&UserQues{})
+	
+}
+
+
+// modify to UserQues
 func (db *DBStore) GetQuesByID (qid int) (error, Questionnaire){
 	var q Questionnaire
-	if db.Where("ID=?", qid).First(&q).RecordNotFound(){
+	if db.Preload("DoneUsers").Where("ID=?", qid).First(&q).RecordNotFound(){
 		return gorm.ErrRecordNotFound, q
 	}
 
 	return nil, q
 }
 
-
+// right
 func (db *DBStore)GetQuesByAgentAccount(agentAccount string) (error, []Questionnaire) {
 	var qArr []Questionnaire
-	if db.Where("AgentAccount = ?", agentAccount).Find(&qArr).RecordNotFound(){
+	if db.Preload("DoneUsers").Where("AgentAccount = ?", agentAccount).Find(&qArr).RecordNotFound(){
 		return gorm.ErrRecordNotFound, qArr
 	}
 
 	return nil, qArr
 }
 
+//right
+
+/*
 func (db *DBStore)GetQuesByAttendUser(uid string) (error, []Questionnaire) {
 	var qArr []Questionnaire
 	if db.Where("DoneUsers ", ).Find(&qArr).RecordNotFound(){
@@ -61,6 +83,7 @@ func (db *DBStore)GetQuesByAttendUser(uid string) (error, []Questionnaire) {
 
 	return nil, qArr
 }
+*/
 
 /*
 func (db *DBStore)GetQuesByUserAndAgent(uid string, agentAccount string) (error, []Questionnaire) {
@@ -68,9 +91,11 @@ func (db *DBStore)GetQuesByUserAndAgent(uid string, agentAccount string) (error,
 }
 */
 
+//right
 func (db *DBStore) GetAllQues() []Questionnaire {
 	var allQ []Questionnaire
-	return db.Find(&allQ)
+	db.Find(&allQ)
+	return	allQ
 }
 
 func (db *DBStore)AddQues(q *Questionnaire) error {
@@ -82,6 +107,19 @@ func (db *DBStore)AddUserToQues(q * Questionnaire) error {
 	db.Save(q)
 	return nil
 }
+
+func (db *DBStore) AddUserResult(userQ * UserQues ) error{
+	db.Save(userQ)
+	return nil
+}
+
+func (db *DBStore) GetUserQuesByQuesID(id int) []UserQues{
+	var uqs []UserQues
+	db.Preload("DoneUsers").Where("ID=?", id).Find(&uqs)
+	return uqs
+}
+
+
 
 /*
 type questModel struct{

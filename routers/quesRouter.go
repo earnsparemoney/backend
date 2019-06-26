@@ -4,7 +4,7 @@ import (
 	"github.com/earnsparemoney/backend/controllers"
 	echo "github.com/labstack/echo/v4"
 	//"github.com/earnsparemoney/backend/models"
-	"github.com/earnsparemoney/backend/middleware"
+	//"github.com/earnsparemoney/backend/middleware"
 )
 
 func RegisterQuesRouters(e *echo.Echo, uc *controllers.UserController) {

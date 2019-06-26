@@ -8,7 +8,7 @@ import (
 	//  "github.com/gorilla/sessions"
 	//"fmt"
 	"github.com/earnsparemoney/backend/middleware"
-	"github.com/labstack/echo-contrib/session"
+	//"github.com/labstack/echo-contrib/session"
 	"github.com/wxnacy/wgo/arrays"
 	"io/ioutil"
 	"strconv"

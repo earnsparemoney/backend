@@ -38,6 +38,7 @@ func main() {
 	env := &Env{db, e, controllers.GetUserController(db)}
 	env.db.UserModelInit()
 	env.db.TaskModelInit()
+	env.db.QuesModelInit()
 
 	routers.RegisterUserRouters(env.echo, env.uc)
 
