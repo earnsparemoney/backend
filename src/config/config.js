@@ -20,3 +20,4 @@ module.exports = {
     secretKey: process.env.SECRET || 'secret'
   }
 }
+
