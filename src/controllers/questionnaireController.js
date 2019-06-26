@@ -195,8 +195,8 @@ module.exports = {
         }
       })
 
-      if(!par){
-        res.status(400).send({
+      if(par){
+        return res.status(400).send({
           error: "user already complete this questionnaire"
         })
       }
@@ -212,6 +212,7 @@ module.exports = {
       })
 
     } catch (error) {
+      console.log(error)
       res.status(400).send({
         error: error
       })

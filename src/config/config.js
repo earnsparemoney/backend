@@ -2,12 +2,12 @@ module.exports = {
   port: 4000,
   db: {
     user: 'root',
-    password: 'sactestdatabase',
+    password: 'abc25834934F',
     database: 'EarnMyMoney',
     options: {
       dialect: process.env.DIALECT || 'mysql',
-      host: '222.200.190.31',
-      port: 33336,
+      host: 'localhost',
+      port: 3306,
       define: {
         charset: 'utf8mb4',
         collate: 'utf8mb4_unicode_ci',
