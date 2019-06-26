@@ -1,2 +1,2 @@
 # backend
-A go implementation of backend service
+A nodejs implementation of backend service
