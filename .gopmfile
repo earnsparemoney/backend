@@ -1,9 +1,0 @@
-[target]
-path =  github.com/earnsparemoney/backend
-
-[deps]
-github.com/dgrijalva/jwt-go = branch:master
-github.com/gorilla/sessions =  branch:master
-github.com/jinzhu/gorm =  branch:master
-github.com/labstack/echo = branch:master
-github.com/labstack/echo-contrib = branch:master
