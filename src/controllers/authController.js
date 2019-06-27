@@ -115,7 +115,7 @@ module.exports = {
       }
       if (req.body.password) {
         await user.update({
-          account: req.body.account,
+          username: req.body.username,
           email: req.body.email,
           password: req.body.password,
           phone: req.body.phone,
@@ -123,7 +123,7 @@ module.exports = {
         })
       } else {
         await user.update({
-          account: req.body.account,
+          username: req.body.username,
           email: req.body.email,
           phone: req.body.phone,
           img: (req.file) ? req.file.path : user.img
