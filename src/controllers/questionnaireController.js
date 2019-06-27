@@ -7,6 +7,15 @@ module.exports = {
     try {
       var questionnaires = await Questionnaire.findAll({
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+      }).map(async (questionnaire) => {
+        var count = await Participation.findAll({
+          where: {
+            QuestionnaireId: questionnaire.id
+          }
+        })
+        questionnaire = questionnaire.toJSON()
+        questionnaire.numOfFilled = (count.length === undefined) ? 0 : count.length
+        return questionnaire
       })
       res.send({
         questionnaires: questionnaires
@@ -19,18 +28,47 @@ module.exports = {
   },
   async getPublishedQuestionnaires (req, res) {
     try {
+      const token = req.header('Authorization')
+      if (!token) {
+        return res.status(403).send({
+          error: 'token should be given!'
+        })
+      }
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(403).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
+        return res.status(403).send({
+          error: 'Token expired, please login again!'
+        })
+      }
       var questionnaires = await Questionnaire.findAll({
         where: {
-          publisherId: req.params.id
+          publisherId: result.id
         },
-        include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+        include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+      }).map(async (questionnaire) => {
+        var count = await Participation.findAll({
+          where: {
+            QuestionnaireId: questionnaire.id
+          }
+        })
+        questionnaire = questionnaire.toJSON()
+        questionnaire.numOfFilled = (count.length === undefined) ? 0 : count.length
+        return questionnaire
       })
       res.send({
         questionnaires: questionnaires
       })
     } catch (err) {
+      console.log(err)
       res.status(400).send({
-        error: 'Token should be given, Please check your login state!'
+        error: 'Fail to get data!'
       })
     }
   },
@@ -57,6 +95,7 @@ module.exports = {
       }
       await Questionnaire.create({
         title: req.body.title,
+        description: req.body.description,
         questions: req.body.questions,
         startDate: req.body.startDate,
         endDate: req.body.endDate,
@@ -279,6 +318,8 @@ module.exports = {
       where: {
         QuestionnaireId: qid
       }
+    }).map((result) => {
+      return result.answer
     })
 
     let allResult = all.join('\n')

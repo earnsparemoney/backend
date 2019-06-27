@@ -1,4 +1,4 @@
-const { User, Task, TaskUser } = require('../models')
+const { User, Task } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -109,27 +109,18 @@ module.exports = {
   },
   async getAllRunningTasksParticipatesIn (req, res) {
     try {
-      var participants = await TaskUser.findAll({
+      var participants = await Task.findAll({
         where: {
-          UserId: req.params.id
-        }
-      }).map(async (participant) => {
-        var res = await Task.findOne({
-          where: {
-            id: participant.EventId
-          },
-          include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
-        })
-        res = res.toJSON()
-        return res
+          UserId: req.params.id,
+          status: 1
+        },
+        include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
-
-      participants = participants.filter(item => item.status == 1)
-
       res.send({
         tasks: participants
       })
     } catch (err) {
+      console.log(err)
       res.status(400).send({
         error: 'Some wrong occured when getting data!'
       })
@@ -137,23 +128,14 @@ module.exports = {
   },
   async getAllFinishedTasksParticipatesIn (req, res) {
     try {
-      var participants = await TaskUser.findAll({
+      var participants = await Task.findAll({
         where: {
-          UserId: req.params.id
-        }
-      }).map(async (participant) => {
-        var res = await Task.findOne({
-          where: {
-            id: participant.EventId
-          },
-          include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
-        })
-        res = res.toJSON()
-        return res
+          UserId: req.params.id,
+          status: 2
+        },
+        include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
 
-      participants = participants.filter(item => item.status == 2)
-      
       res.send({
         tasks: participants
       })
@@ -186,9 +168,22 @@ module.exports = {
       }
       var task = await Task.findOne({
         where: {
+          status: 0,
           id: req.params.id
         }
       })
+
+      if (!task) {
+        return res.status(403).send({
+          error: 'Please confirm the status of the task!!'
+        })
+      }
+
+      if (task.publisherId === result.id) {
+        return res.status(403).send({
+          error: 'You are the publisher!!'
+        })
+      }
 
       await task.update({
         status: 1,

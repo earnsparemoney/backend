@@ -33,6 +33,10 @@ module.exports = (app) => {
     taskController.deleteTask)
   app.get('/tasks/user/:id',
     taskController.getAllPublishedTasks)
+  app.get('/tasks/user/:id/finish',
+    taskController.getAllFinishedTasksParticipatesIn)
+  app.get('/tasks/user/:id/running',
+    taskController.getAllRunningTasksParticipatesIn)
   app.post('/task/:id/participate',
     taskController.participateTask)
   app.post('/task/:id/finish',
@@ -52,10 +56,10 @@ module.exports = (app) => {
     questionnaireController.getDetil)
   app.delete('/questionnaires/:id',
     questionnaireController.deleteQuestionnaire)
-  app.get('/questionnaires/user/:id',
+  app.get('/questionnaires/user',
     questionnaireController.getPublishedQuestionnaires)
   app.post('/questionnaires/:id',
     questionnaireController.participateQuestionnaire)
-
-  app.get('/results/:qid', questionnaireController.getAllResults)
+  app.get('/results/:qid',
+    questionnaireController.getAllResults)
 }
