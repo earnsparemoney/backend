@@ -29,10 +29,10 @@ module.exports = (app) => {
     taskController.getAllTasks)
   app.post('/tasks',
     taskController.addTask)
+  app.get('/tasks/user',
+    taskController.getAllPublishedTasks)
   app.delete('/tasks/:id',
     taskController.deleteTask)
-  app.get('/tasks/user/:id',
-    taskController.getAllPublishedTasks)
   app.get('/tasks/user/:id/finish',
     taskController.getAllFinishedTasksParticipatesIn)
   app.get('/tasks/user/:id/running',

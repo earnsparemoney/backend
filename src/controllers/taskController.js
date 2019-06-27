@@ -94,14 +94,34 @@ module.exports = {
   },
   async getAllPublishedTasks (req, res) {
     try {
+      const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
+        return res.status(400).send({
+          error: 'Token expired, please login again!'
+        })
+      }
       var tasks = await Task.findAll({
         where: {
-          publisherId: req.params.id
+          publisherId: result.id
         },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
       res.send({ tasks: tasks })
     } catch (err) {
+      console.log(err)
       res.status(400).send({
         error: 'Some wrong occured when getting data!'
       })
