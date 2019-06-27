@@ -135,5 +135,18 @@ module.exports = {
         error: err.errors ? err.errors[0].message : 'Some wrong occured when updating info!'
       })
     }
+  },
+  async getUserInfo (req, res) {
+    let user = await User.findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    const userJson = user.toJSON()
+    var tmpData = user.dataValues
+    delete tmpData.password
+    res.send({
+      user: tmpData
+    })
   }
 }

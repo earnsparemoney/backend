@@ -20,8 +20,8 @@ module.exports = (app) => {
   app.put('/user',
     uploader.userImg.single('image'),
     authController.updateUser)
-  app.get('/usericon/:username',
-    authController.getIcon)
+  app.get('/user/:id',
+    authController.getUserInfo)
   /***
    * Task Part
    */
