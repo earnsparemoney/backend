@@ -110,7 +110,7 @@ module.exports = {
         where: {
           status: 0,
           deadline: {
-            [Sequelize.Op.gt]: Date.now()
+            [Sequelize.Op.gte]: Date.now() - 24 * 60 * 60 * 1000
           }
         },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
