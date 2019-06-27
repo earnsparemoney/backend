@@ -1,4 +1,4 @@
-const { Questionnaire, User, Participation } = require('../models')
+const { Questionnaire, User, Participation, Sequelize } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -6,6 +6,11 @@ module.exports = {
   async getAllQuestionnaires (req, res) {
     try {
       let option = {
+        where: {
+          endDate: {
+            [Sequelize.Op.gt]: Date.now()
+          }
+        },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       }
       if (req.query.page) {
@@ -124,7 +129,6 @@ module.exports = {
         title: req.body.title,
         description: req.body.description,
         questions: req.body.questions,
-        startDate: req.body.startDate,
         endDate: req.body.endDate,
         publisherId: result.id,
         adward: req.body.adward,

@@ -1,4 +1,4 @@
-const { User, Task } = require('../models')
+const { User, Task, Sequelize } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -108,7 +108,10 @@ module.exports = {
       let option = {
         order: [['deadline', 'DESC']],
         where: {
-          status: 0
+          status: 0,
+          deadline: {
+            [Sequelize.Op.gt]: Date.now()
+          }
         },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       }
