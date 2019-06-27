@@ -24,6 +24,19 @@ module.exports = {
           error: 'Token expired, please login again!'
         })
       }
+
+      let user = await User.findOne({
+        where: {
+          id: result.id
+        }
+      })
+
+      if (user.balance < req.body.adward) {
+        return res.status(403).send({
+          error: '你的余额不足, 快去赚闲币吧'
+        })
+      }
+
       var task = await Task.create({
         name: req.body.name,
         description: req.body.description,
@@ -32,6 +45,11 @@ module.exports = {
         adward: req.body.adward,
         publisherId: result.id
       })
+
+      await user.update({
+        balance: user.balance - req.body.adward
+      })
+
       const taskJSON = task.toJSON()
 
       res.send({
@@ -70,6 +88,16 @@ module.exports = {
         publisherId: result.id
       }
     })
+    let user = await User.findOne({
+      where: {
+        id: result.id
+      }
+    })
+    if (task.status !== 2) {
+      await user.update({
+        balance: user.balance + task.adward
+      })
+    }
     await task.destroy()
     res.send({
       info: 'Delete task successfully!'

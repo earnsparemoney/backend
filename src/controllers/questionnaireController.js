@@ -107,6 +107,19 @@ module.exports = {
           error: 'Token expired, please login again!'
         })
       }
+      
+      let user = await User.findOne({
+        where: {
+          id: result.id
+        }
+      })
+
+      if (user.balance < req.body.adward * req.body.usernum) {
+        return res.status(403).send({
+          error: '你的余额不足, 快去赚闲币吧'
+        })
+      }
+
       await Questionnaire.create({
         title: req.body.title,
         description: req.body.description,
@@ -116,6 +129,10 @@ module.exports = {
         publisherId: result.id,
         adward: req.body.adward,
         usernum: req.body.usernum
+      })
+
+      await user.update({
+        balance: user.balance - req.body.adward * req.body.usernum
       })
 
       var questionnaire = await Questionnaire.findOne({
@@ -156,19 +173,44 @@ module.exports = {
           error: 'Token expired, please login again!'
         })
       }
+
+      let user = await User.findOne({
+        where: {
+          id: result.id
+        }
+      })
+
       var questionnaire = await Questionnaire.findOne({
         where: {
           id: req.params.id
         }
       })
+
       if (!questionnaire) {
         res.status(400).send({
-          error: 'No place is found, please check your request!'
+          error: 'No questionnaire is found, please check your request!'
         })
       }
+
+      var count = await Participation.findAll({
+        where: {
+          QuestionnaireId: req.params.id
+        }
+      })
+
+      count = (count.length === undefined) ? 0 : count.length
+      
+      console.log(user)
+
+      await user.update({
+        balance: user.balance + (questionnaire.usernum - count) * questionnaire.adward
+      })
+
+      console.log(user)
+
       await questionnaire.destroy()
       res.send({
-        info: 'Delete place successfully'
+        info: '删除成功, 部分闲币已退回'
       })
     } catch (err) {
       res.status(400).send({

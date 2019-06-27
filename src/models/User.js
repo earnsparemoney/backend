@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     email: { type: DataTypes.STRING, unique: true, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
     phone: { type: DataTypes.STRING, unique: true, allowNull: false },
-    balance: { type: DataTypes.DOUBLE, defaultValue: 0 },
+    balance: { type: DataTypes.DOUBLE, defaultValue: 100 },
     img: DataTypes.STRING
   }, {
     hooks: {
