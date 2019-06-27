@@ -3,7 +3,7 @@ FROM node:8.9-alpine
 #声明作者
 MAINTAINER WilsonZhong
 #移动当前目录下面的文件到app目录下
-ADD . /app/
+COPY . /app/
 #进入到app目录下面，类似cd
 WORKDIR /app
 #安装依赖
