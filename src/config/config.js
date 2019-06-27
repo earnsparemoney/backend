@@ -1,9 +1,9 @@
 module.exports = {
   port: 4000,
   db: {
-    user: 'root',
-    password: 'abc25834934F',
-    database: 'EarnMyMoney',
+    user: 'EarnMoney',
+    password: 'EarnMoney',
+    database: 'EarnMoney',
     options: {
       dialect: process.env.DIALECT || 'mysql',
       host: process.env.HOST || 'mysql',
