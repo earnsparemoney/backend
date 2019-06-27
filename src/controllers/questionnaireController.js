@@ -8,7 +8,7 @@ module.exports = {
       let option = {
         where: {
           endDate: {
-            [Sequelize.Op.gt]: Date.now()
+            [Sequelize.Op.gte]: Date.now() - 24 * 60 * 60 * 1000
           }
         },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
@@ -108,6 +108,7 @@ module.exports = {
           })
         }
       } catch (err) {
+        console.log(err)
         return res.status(400).send({
           error: 'Token expired, please login again!'
         })
