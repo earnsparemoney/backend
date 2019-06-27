@@ -39,6 +39,8 @@ module.exports = (app) => {
     taskController.getAllRunningTasksParticipatesIn)
   app.post('/task/:id/participate',
     taskController.participateTask)
+  app.post('/task/:id/exit',
+    taskController.exitTask)
   app.post('/task/:id/finish',
     taskController.finishTask)
   app.get('/task/:id',

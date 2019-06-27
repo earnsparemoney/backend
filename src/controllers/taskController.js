@@ -77,13 +77,21 @@ module.exports = {
   },
   async getAllTasks (req, res) {
     try {
-      var tasks = await Task.findAll({
+      let option = {
         order: [['deadline', 'DESC']],
         where: {
           status: 0
         },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
-      })
+      }
+      if (req.query.page) {
+        let page = parseInt(req.query.page)
+        let pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 5
+        option.limit = pageSize
+        option.offset = (page - 1) * pageSize
+        console.log(option)
+      }
+      var tasks = await Task.findAll(option)
       res.send({ tasks: tasks })
     } catch (err) {
       console.log(err.message)
@@ -113,12 +121,19 @@ module.exports = {
           error: 'Token expired, please login again!'
         })
       }
-      var tasks = await Task.findAll({
+      let option = {
         where: {
           publisherId: result.id
         },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
-      })
+      }
+      if (req.query.page) {
+        let page = parseInt(req.query.page)
+        let pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 5
+        option.limit = pageSize
+        option.offset = (page - 1) * pageSize
+      }
+      var tasks = await Task.findAll(option)
       res.send({ tasks: tasks })
     } catch (err) {
       console.log(err)
@@ -129,13 +144,20 @@ module.exports = {
   },
   async getAllRunningTasksParticipatesIn (req, res) {
     try {
-      var participants = await Task.findAll({
+      let option = {
         where: {
           UserId: req.params.id,
           status: 1
         },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
-      })
+      }
+      if (req.query.page) {
+        let page = parseInt(req.query.page)
+        let pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 5
+        option.limit = pageSize
+        option.offset = (page - 1) * pageSize
+      }
+      var participants = await Task.findAll(option)
       res.send({
         tasks: participants
       })
@@ -148,13 +170,20 @@ module.exports = {
   },
   async getAllFinishedTasksParticipatesIn (req, res) {
     try {
-      var participants = await Task.findAll({
+      let option = {
         where: {
           UserId: req.params.id,
           status: 2
         },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
-      })
+      }
+      if (req.query.page) {
+        let page = parseInt(req.query.page)
+        let pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 5
+        option.limit = pageSize
+        option.offset = (page - 1) * pageSize
+      }
+      var participants = await Task.findAll(option)
 
       res.send({
         tasks: participants
@@ -267,6 +296,60 @@ module.exports = {
     } catch (err) {
       res.status(400).send({
         error: 'Some wrong occured when finishing!!'
+      })
+    }
+  },
+  async exitTask (req, res) {
+    try {
+      const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
+        return res.status(400).send({
+          error: 'Token expired, please login again!'
+        })
+      }
+      var task = await Task.findOne({
+        where: {
+          status: 1,
+          id: req.params.id
+        }
+      })
+
+      if (!task) {
+        return res.status(403).send({
+          error: 'Please confirm the status of the task!!'
+        })
+      }
+
+      if (task.UserId === result.id) {
+        return res.status(403).send({
+          error: 'You are the participator!!'
+        })
+      }
+
+      await task.update({
+        status: 0,
+        UserId: null
+      })
+      res.send({
+        info: 'Exit successfully!'
+      })
+    } catch (err) {
+      console.log(err.message)
+      res.status(400).send({
+        error: 'Some wrong occured when participate in event!!'
       })
     }
   },

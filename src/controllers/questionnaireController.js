@@ -5,9 +5,16 @@ const config = require('../config/config')
 module.exports = {
   async getAllQuestionnaires (req, res) {
     try {
-      var questionnaires = await Questionnaire.findAll({
+      let option = {
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
-      }).map(async (questionnaire) => {
+      }
+      if (req.query.page) {
+        let page = parseInt(req.query.page)
+        let pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 5
+        option.limit = pageSize
+        option.offset = (page - 1) * pageSize
+      }
+      var questionnaires = await Questionnaire.findAll(option).map(async (questionnaire) => {
         var count = await Participation.findAll({
           where: {
             QuestionnaireId: questionnaire.id
@@ -47,12 +54,19 @@ module.exports = {
           error: 'Token expired, please login again!'
         })
       }
-      var questionnaires = await Questionnaire.findAll({
+      let option = {
         where: {
           publisherId: result.id
         },
         include: [{ model: User, as: 'publisher', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
-      }).map(async (questionnaire) => {
+      }
+      if (req.query.page) {
+        let page = parseInt(req.query.page)
+        let pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 5
+        option.limit = pageSize
+        option.offset = (page - 1) * pageSize
+      }
+      var questionnaires = await Questionnaire.findAll(option).map(async (questionnaire) => {
         var count = await Participation.findAll({
           where: {
             QuestionnaireId: questionnaire.id
@@ -165,13 +179,21 @@ module.exports = {
   async getParticipateQuestionnaire (req, res) {
     try {
       //const token = req.header('Authorization')
-      var result = []
-      id = req.params.id
-      var paticipations = await Participation.findAll({
+      let option = {
         where: {
           UserId: id
         }
-      })
+      }
+      if (req.query.page) {
+        let page = parseInt(req.query.page)
+        let pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 5
+        option.limit = pageSize
+        option.offset = (page - 1) * pageSize
+      }
+
+      var result = []
+      id = req.params.id
+      var paticipations = await Participation.findAll(option)
 
       if(!paticipations) {
         res.status(400).send({
