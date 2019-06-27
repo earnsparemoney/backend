@@ -107,29 +107,23 @@ module.exports = {
           error: 'Token expired, please login again!'
         })
       }
+
       var user = await User.findOne({ where: { id: result.id } })
       if (!user) {
         return res.status(400).send({
           error: "Can't find the user!"
         })
       }
-      if (req.body.password) {
-        await user.update({
-          account: req.body.account,
-          email: req.body.email,
-          password: req.body.password,
-          phone: req.body.phone,
-          img: (req.file) ? req.file.path : user.img
-        })
-      } else {
-        await user.update({
-          account: req.body.account,
+      console.log(req.body)
+      await user.update({
+          username: req.body.username,
           email: req.body.email,
           phone: req.body.phone,
           img: (req.file) ? req.file.path : user.img
         })
-      }
+
       const userJson = user.toJSON()
+      console.log(userJson)
       var tmpData = user.dataValues
       delete tmpData.password
       res.send({
