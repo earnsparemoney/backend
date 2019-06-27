@@ -6,7 +6,7 @@ module.exports = {
     database: 'EarnMyMoney',
     options: {
       dialect: process.env.DIALECT || 'mysql',
-      host: 'localhost',
+      host: process.env.HOST || 'mysql',
       port: 3306,
       define: {
         charset: 'utf8mb4',
