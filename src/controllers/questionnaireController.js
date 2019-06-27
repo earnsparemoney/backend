@@ -151,9 +151,8 @@ module.exports = {
         questionnaire: questionnaire.toJSON()
       })
     } catch (err) {
-      console.log(err)
       res.status(400).send({
-        error: err.fields !== undefined ? 'The ' + err.fields[0] + ' has been used!' : 'Error input please check your input'
+        error: err.errors !== undefined ? err.errors[0].message : 'Error input please check your input'
       })
     }
   },
@@ -219,7 +218,7 @@ module.exports = {
       })
     } catch (err) {
       res.status(400).send({
-        error: 'Some error occured when deleting event!'
+        error: 'Some error occured when deleting questionnaire!'
       })
     }
   },
@@ -338,7 +337,7 @@ module.exports = {
     } catch (error) {
       console.log(error)
       res.status(400).send({
-        error: error
+        error: err.errors ? err.errors[0].message : 'Error when updating answer!'
       })
     }
     return null
