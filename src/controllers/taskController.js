@@ -226,6 +226,16 @@ module.exports = {
           UserId: result.id
         }
       })
+      
+      var user = await User.findOne({
+        where: {
+          id: result.id
+        }
+      })
+
+      await user.update({
+        balance: user.balance + task.adward
+      })
 
       await task.update({
         status: 2

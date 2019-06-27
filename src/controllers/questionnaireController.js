@@ -246,6 +246,22 @@ module.exports = {
         answer: answer
       })
 
+      var user = await User.findOne({
+        where: {
+          id: result.id
+        }
+      })
+
+      var questionnaire = await Questionnaire.findOne({
+        where: {
+          id: qid
+        }
+      })
+
+      await user.update({
+        balance: user.balance + questionnaire.adward
+      })
+
       res.send({
         info: "success"
       })
