@@ -1,8 +1,8 @@
 version: "3"
 services:
   server:
-    image: wilsonzhong/yueba_server:latest
-    container_name: yueba_server
+    image: wilsonzhong/earn_money_backend:latest
+    container_name: earn_money_backend
     environment:
       HOST: mysql
     ports:
@@ -14,7 +14,7 @@ services:
     volumes:
       - ~/public:/app/public
   mysql:
-    image: wilsonzhong/yueba_mysql:latest
+    image: wilsonzhong/earn_money_sql:latest
     environment:
       MYSQL_ROOT_PASSWORD: EarnMoney
     container_name: mysql

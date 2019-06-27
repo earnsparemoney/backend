@@ -1,12 +1,12 @@
 module.exports = {
   port: 4000,
   db: {
-    user: 'root',
-    password: 'abc25834934F',
-    database: 'EarnMyMoney',
+    user: 'EarnMoney',
+    password: 'EarnMoney',
+    database: 'EarnMoney',
     options: {
       dialect: process.env.DIALECT || 'mysql',
-      host: 'localhost',
+      host: process.env.HOST || 'mysql',
       port: 3306,
       define: {
         charset: 'utf8mb4',
